@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +19,7 @@ namespace TaxAlpha.Core.Strategies
 
         public string Name => "Persistent Portfolio";
 
-        public async Task ExecuteAsync()
+        public async Task<IEnumerable<Signal>> ExecuteAsync()
         {
             var symbols = new[] { "SPY", "TLT", "GLD" };
             var allocation = new Dictionary<string, decimal>
@@ -29,35 +28,8 @@ namespace TaxAlpha.Core.Strategies
                 { "TLT", 0.35m },
                 { "GLD", 0.15m }
             };
-            var netLiqValue = 100000m; // Example Net Liq Value
-
-            var signals = await GetTradingSignals(symbols);
-
-            Console.WriteLine($"\nTrading Signals (SMA 150):");
-            foreach (var (symbol, (isBuySignal, movingAverage, lastClose)) in signals)
-            {
-                Console.WriteLine($"- {symbol}: Last Close: {lastClose:C}, SMA: {movingAverage:C}, Signal: {(isBuySignal ? "Buy" : "Hold/Sell")}");
-            }
-
-            var portfolioAllocation = CalculatePortfolioAllocation(netLiqValue, signals, allocation);
-
-            Console.WriteLine($"\nPortfolio Allocation (Net Liq: {netLiqValue:C}):");
-            if (portfolioAllocation.Any())
-            {
-                foreach (var (symbol, (shares, value)) in portfolioAllocation)
-                {
-                    Console.WriteLine($"- {symbol}: Buy {shares} shares for a total of {value:C}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("No buy signals at the moment.");
-            }
-        }
-
-        private async Task<Dictionary<string, (bool isBuySignal, decimal movingAverage, decimal lastClose)>> GetTradingSignals(params string[] symbols)
-        {
-            var signals = new Dictionary<string, (bool isBuySignal, decimal movingAverage, decimal lastClose)>();
+            
+            var signals = new List<Signal>();
 
             foreach (var symbol in symbols)
             {
@@ -67,35 +39,18 @@ namespace TaxAlpha.Core.Strategies
                     var movingAverage = prices.TakeLast(MovingAverageDays).Average(p => p.Close);
                     var lastClose = prices.Last().Close;
                     var isBuySignal = lastClose > movingAverage;
-                    signals.Add(symbol, (isBuySignal, movingAverage, lastClose));
-                }
-            }
-
-            return signals;
-        }
-
-        private Dictionary<string, (int shares, decimal value)> CalculatePortfolioAllocation(
-            decimal netLiqValue,
-            Dictionary<string, (bool isBuySignal, decimal movingAverage, decimal lastClose)> signals,
-            Dictionary<string, decimal> allocation)
-        {
-            var portfolio = new Dictionary<string, (int shares, decimal value)>();
-
-            foreach (var (symbol, (isBuySignal, _, lastClose)) in signals)
-            {
-                if (isBuySignal && allocation.TryGetValue(symbol, out var targetAllocation))
-                {
-                    var targetValue = netLiqValue * targetAllocation;
-                    if (lastClose > 0)
+                    var description = $"Last Close: {lastClose:C}, SMA: {movingAverage:C}, Signal: {(isBuySignal ? "Buy" : "Hold/Sell")}";
+                    if (isBuySignal)
                     {
-                        var shares = (int)(targetValue / lastClose);
-                        var value = shares * lastClose;
-                        portfolio.Add(symbol, (shares, value));
+                        signals.Add(new Signal(symbol, allocation[symbol], description));
+                    }
+                    else
+                    {
+                        signals.Add(new Signal(symbol, 0, description));
                     }
                 }
             }
-
-            return portfolio;
+            return signals;
         }
     }
 }

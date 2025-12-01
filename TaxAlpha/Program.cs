@@ -1,4 +1,4 @@
-﻿using TaxAlpha.Core.Engine;
+using TaxAlpha.Core.Engine;
 using TaxAlpha.Core.Interfaces;
 using TaxAlpha.Core.Models;
 using TaxAlpha.Core.Strategies;
@@ -99,8 +99,10 @@ static async Task RunTradingEngine()
     string inputPath = Path.Combine(basePath, "input");
 
     var historicalPriceProvider = new YahooHistoricalPriceProvider(inputPath);
-    var tradingEngine = new TradingEngine(historicalPriceProvider);
-
+    var portfolio = new Portfolio(100000m);
+    var logger = new ConsoleStrategyLogger();
+    var tradingEngine = new TradingEngine(historicalPriceProvider, portfolio, logger);
+    
     var strategies = new List<ITradingStrategy>
     {
         new PersistentPortfolioStrategy(tradingEngine),
@@ -120,7 +122,7 @@ static async Task RunTradingEngine()
     {
         var selectedStrategy = strategies[strategyIndex - 1];
         Console.WriteLine($"\n--- Running Strategy: {selectedStrategy.Name} ---");
-        await selectedStrategy.ExecuteAsync();
+        await tradingEngine.RunStrategy(selectedStrategy);
     }
     else
     {

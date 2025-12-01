@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,18 +18,16 @@ namespace TaxAlpha.Core.Strategies
 
         public string Name => "Tactical Asset Allocation";
 
-        public async Task ExecuteAsync()
+        public async Task<IEnumerable<Signal>> ExecuteAsync()
         {
             var symbols = new[] { "SPY", "TIP", "BIL", "IEF" };
-            var netLiqValue = 100000m; // Example Net Liq Value
-
+            
             var momentum = new Dictionary<string, decimal>();
             foreach (var symbol in symbols)
             {
                 var prices = await _tradingEngine.GetPrices(symbol);
                 if (prices.Count == 0)
                 {
-                    Console.WriteLine($"No prices found for {symbol}. Skipping...");
                     continue;
                 }
                 var roc1 = _tradingEngine.CalculateRoc(prices, 21);
@@ -40,69 +37,38 @@ namespace TaxAlpha.Core.Strategies
                 var symbolMomentum = (roc1 + roc3 + roc6 + roc13) / 4;
                 momentum.Add(symbol, symbolMomentum);
             }
+            
             if (!momentum.ContainsKey("SPY") || !momentum.ContainsKey("TIP"))
             {
-                Console.WriteLine("Could not calculate momentum for SPY or TIP. Exiting strategy.");
-                return;
+                return new List<Signal>();
             }
 
-
             var isAggressive = momentum["SPY"] > 0 && momentum["TIP"] > 0;
-
-            Console.WriteLine("\nEnvironment: {0}", isAggressive ? "Aggressive" : "Defensive");
-            Console.WriteLine("SPY Momentum: {0:P2}", momentum["SPY"]);
-            Console.WriteLine("TIP Momentum: {0:P2}", momentum["TIP"]);
-
+            var signals = new List<Signal>();
 
             if (isAggressive)
             {
-                Console.WriteLine("\nAction: Buy 100% SPY");
-                var prices = await _tradingEngine.GetPrices("SPY");
-                var lastClose = prices.Last().Close;
-                if (lastClose > 0)
-                {
-                    var shares = (int)(netLiqValue / lastClose);
-                    var value = shares * lastClose;
-                    Console.WriteLine("- SPY: Buy {0} shares for a total of {1:C}", shares, value);
-                }
+                signals.Add(new Signal("SPY", 1.0m, $"Aggressive environment: SPY Momentum {momentum["SPY"]:P2}, TIP Momentum {momentum["TIP"]:P2}"));
             }
             else
             {
-                Console.WriteLine("\n--- Defensive Environment ---");
                 if (momentum.ContainsKey("BIL") && momentum.ContainsKey("IEF"))
                 {
-                    Console.WriteLine("BIL Momentum: {0:P2}", momentum["BIL"]);
-                    Console.WriteLine("IEF Momentum: {0:P2}", momentum["IEF"]);
-
                     var defensiveSymbols = new[] { "BIL", "IEF" };
                     var defensiveMomentum = defensiveSymbols
-                        .Where(s => momentum[s] > 0)
+                        .Where(s => momentum.ContainsKey(s) && momentum[s] > 0)
                         .OrderByDescending(s => momentum[s])
                         .ToList();
 
                     if (defensiveMomentum.Any())
                     {
                         var symbolToBuy = defensiveMomentum.First();
-                        Console.WriteLine("\nAction: Buy 100% {0}", symbolToBuy);
-                        var prices = await _tradingEngine.GetPrices(symbolToBuy);
-                        var lastClose = prices.Last().Close;
-                        if (lastClose > 0)
-                        {
-                            var shares = (int)(netLiqValue / lastClose);
-                            var value = shares * lastClose;
-                            Console.WriteLine("- {0}: Buy {1} shares for a total of {2:C}", symbolToBuy, shares, value);
-                        }
+                        signals.Add(new Signal(symbolToBuy, 1.0m, $"Defensive environment: {symbolToBuy} Momentum {momentum[symbolToBuy]:P2}"));
                     }
-                    else
-                    {
-                        Console.WriteLine("\nAction: No buy signals at the moment.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Could not calculate momentum for BIL or IEF. Exiting strategy.");
                 }
             }
+
+            return signals;
         }
     }
 }

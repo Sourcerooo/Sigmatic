@@ -1,6 +1,7 @@
 ﻿using TaxAlpha.Core.Engine;
 using TaxAlpha.Core.Interfaces;
 using TaxAlpha.Core.Models;
+using TaxAlpha.Core.Strategies;
 using TaxAlpha.Infrastructure.Loaders;
 using TaxAlpha.Infrastructure.Providers;
 using TaxAlpha.Reporting;
@@ -100,35 +101,29 @@ static async Task RunTradingEngine()
     var historicalPriceProvider = new YahooHistoricalPriceProvider(inputPath);
     var tradingEngine = new TradingEngine(historicalPriceProvider);
 
-    var symbols = new[] { "SPY", "TLT", "GLD" };
-    var allocation = new Dictionary<string, decimal>
+    var strategies = new List<ITradingStrategy>
     {
-        { "SPY", 0.50m },
-        { "TLT", 0.35m },
-        { "GLD", 0.15m }
+        new PersistentPortfolioStrategy(tradingEngine),
+        new TacticalAssetAllocationStrategy(tradingEngine)
     };
-    var netLiqValue = 100000m; // Example Net Liq Value
 
-    var signals = await tradingEngine.GetTradingSignals(symbols);
-
-    Console.WriteLine($"\nTrading Signals (SMA 150):");
-    foreach (var (symbol, (isBuySignal, movingAverage, lastClose)) in signals)
+    Console.WriteLine("\nPlease select a strategy:");
+    for (int i = 0; i < strategies.Count; i++)
     {
-        Console.WriteLine($"- {symbol}: Last Close: {lastClose:C}, SMA: {movingAverage:C}, Signal: {(isBuySignal ? "Buy" : "Hold/Sell")}");
+        Console.WriteLine($"{i + 1}. {strategies[i].Name}");
     }
 
-    var portfolioAllocation = tradingEngine.CalculatePortfolioAllocation(netLiqValue, signals, allocation);
+    var strategyOption = Console.ReadKey().KeyChar;
+    Console.WriteLine();
 
-    Console.WriteLine($"\nPortfolio Allocation (Net Liq: {netLiqValue:C}):");
-    if (portfolioAllocation.Any())
+    if (int.TryParse(strategyOption.ToString(), out int strategyIndex) && strategyIndex > 0 && strategyIndex <= strategies.Count)
     {
-        foreach (var (symbol, (shares, value)) in portfolioAllocation)
-        {
-            Console.WriteLine($"- {symbol}: Buy {shares} shares for a total of {value:C}");
-        }
+        var selectedStrategy = strategies[strategyIndex - 1];
+        Console.WriteLine($"\n--- Running Strategy: {selectedStrategy.Name} ---");
+        await selectedStrategy.ExecuteAsync();
     }
     else
     {
-        Console.WriteLine("No buy signals at the moment.");
+        Console.WriteLine("Invalid strategy option.");
     }
 }

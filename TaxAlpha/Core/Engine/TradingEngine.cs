@@ -6,51 +6,33 @@ namespace TaxAlpha.Core.Engine
     public class TradingEngine
     {
         private readonly IHistoricalPriceProvider _historicalPriceProvider;
-        private const int MovingAverageDays = 150;
 
         public TradingEngine(IHistoricalPriceProvider historicalPriceProvider)
         {
             _historicalPriceProvider = historicalPriceProvider;
         }
 
-        public async Task<Dictionary<string, (bool isBuySignal, decimal movingAverage, decimal lastClose)>> GetTradingSignals(params string[] symbols)
+        public async Task<IReadOnlyList<PriceTick>> GetPrices(string symbol)
         {
-            var signals = new Dictionary<string, (bool isBuySignal, decimal movingAverage, decimal lastClose)>();
-
-            foreach (var symbol in symbols)
-            {
-                var prices = await _historicalPriceProvider.GetPrices(symbol);
-                if (prices.Count >= MovingAverageDays)
-                {
-                    var movingAverage = prices.TakeLast(MovingAverageDays).Average(p => p.Close);
-                    var lastClose = prices.Last().Close;
-                    var isBuySignal = lastClose > movingAverage;
-                    signals.Add(symbol, (isBuySignal, movingAverage, lastClose));
-                }
-            }
-
-            return signals;
+            return await _historicalPriceProvider.GetPrices(symbol);
         }
 
-        public Dictionary<string, (int shares, decimal value)> CalculatePortfolioAllocation(
-            decimal netLiqValue,
-            Dictionary<string, (bool isBuySignal, decimal movingAverage, decimal lastClose)> signals,
-            Dictionary<string, decimal> allocation)
+        public decimal CalculateRoc(IReadOnlyList<PriceTick> prices, int period)
         {
-            var portfolio = new Dictionary<string, (int shares, decimal value)>();
-
-            foreach (var (symbol, (isBuySignal, _, lastClose)) in signals)
+            if (prices.Count < period)
             {
-                if (isBuySignal && allocation.TryGetValue(symbol, out var targetAllocation))
-                {
-                    var targetValue = netLiqValue * targetAllocation;
-                    var shares = (int)(targetValue / lastClose);
-                    var value = shares * lastClose;
-                    portfolio.Add(symbol, (shares, value));
-                }
+                return 0;
             }
 
-            return portfolio;
+            var lastPrice = prices.Last().Close;
+            var earlierPrice = prices[prices.Count - period].Close;
+
+            if (earlierPrice == 0)
+            {
+                return 0;
+            }
+
+            return (lastPrice - earlierPrice) / earlierPrice;
         }
     }
 }

@@ -32,10 +32,10 @@
 *.app
 
 #Folders
-/TaxAlpha/obj/
-/TaxAlpha/bin/
-/TaxAlpha.Tests/obj/
-/TaxAlpha.Tests/bin/
+/Sigmatic/obj/
+/Sigmatic/bin/
+/Sigmatic.Tests/obj/
+/Sigmatic.Tests/bin/
 /.vs/
 /__pycache__/
 /**/__pycache__/

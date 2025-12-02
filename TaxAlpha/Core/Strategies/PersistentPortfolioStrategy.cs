@@ -9,10 +9,10 @@ namespace TaxAlpha.Core.Strategies
 {
     public class PersistentPortfolioStrategy : ITradingStrategy
     {
-        private readonly TradingEngine _tradingEngine;
+        private readonly ITradingEngine _tradingEngine;
         private const int MovingAverageDays = 150;
 
-        public PersistentPortfolioStrategy(TradingEngine tradingEngine)
+        public PersistentPortfolioStrategy(ITradingEngine tradingEngine)
         {
             _tradingEngine = tradingEngine;
         }

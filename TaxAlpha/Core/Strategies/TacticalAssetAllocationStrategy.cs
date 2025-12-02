@@ -9,9 +9,9 @@ namespace TaxAlpha.Core.Strategies
 {
     public class TacticalAssetAllocationStrategy : ITradingStrategy
     {
-        private readonly TradingEngine _tradingEngine;
+        private readonly ITradingEngine _tradingEngine;
 
-        public TacticalAssetAllocationStrategy(TradingEngine tradingEngine)
+        public TacticalAssetAllocationStrategy(ITradingEngine tradingEngine)
         {
             _tradingEngine = tradingEngine;
         }

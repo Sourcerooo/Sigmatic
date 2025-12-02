@@ -6,7 +6,7 @@ using TaxAlpha.Core.Models;
 
 namespace TaxAlpha.Core.Engine
 {
-    public class TradingEngine
+    public class TradingEngine : ITradingEngine
     {
         private readonly IHistoricalPriceProvider _historicalPriceProvider;
         private readonly IPortfolio _portfolio;

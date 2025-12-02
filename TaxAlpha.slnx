@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="TaxAlpha/TaxAlpha.csproj" />
+  <Project Path="TaxAlpha.Tests/TaxAlpha.Tests.csproj" />
 </Solution>

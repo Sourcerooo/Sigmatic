@@ -32,10 +32,10 @@
 *.app
 
 #Folders
-/node_modules/
-/taxalpha/venv/
-/taxalpha/obj/
-/taxalpha/bin/
+/TaxAlpha/obj/
+/TaxAlpha/bin/
+/TaxAlpha.Tests/obj/
+/TaxAlpha.Tests/bin/
 /.vs/
 /__pycache__/
 /**/__pycache__/

@@ -32,10 +32,8 @@
 *.app
 
 #Folders
-/Sigmatic/obj/
-/Sigmatic/bin/
-/Sigmatic.Tests/obj/
-/Sigmatic.Tests/bin/
+/**/obj/
+/**/bin/
 /.vs/
 /__pycache__/
 /**/__pycache__/

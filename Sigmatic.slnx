@@ -1,14 +1,22 @@
 <Solution>
   <Folder Name="/API/">
-    <Project Path="Sigmatic.API/Sigmatic.API.csproj" Id="60d7ab18-e972-45bf-bf63-f694219ae0bc" />
+    <Project Path="Api/Sigmatic.Api/Sigmatic.Api.csproj" Id="416065cc-ca6b-49e9-b227-0544a1c535a9" />
   </Folder>
   <Folder Name="/Application/">
-    <Project Path="Sigmatic.App/Sigmatic.App.csproj" Id="86d61a0c-1956-4fd0-a147-e3319d09e870" />
+    <Project Path="App/Sigmatic.App.Tests/Sigmatic.App.Tests.csproj" Id="62444cc4-4e27-4afe-8220-6bfeb904bcce" />
+    <Project Path="App/Sigmatic.App/Sigmatic.App.csproj" />
   </Folder>
   <Folder Name="/Core/">
-    <Project Path="Sigmatic.Core/Sigmatic.Core.csproj" Id="7f3d8a9b-0365-4ec4-b4aa-acc9c05ba6df" />
-    <Project Path="Sigmatic.Tests/Sigmatic.Tests.csproj" />
-    <Project Path="Sigmatic/Sigmatic.csproj" />
+    <Project Path="Core/Sigmatic.Core.Tests/Sigmatic.Core.Tests.csproj" Id="1ea4bc96-e8a7-47dd-a270-2c51f72c0601" />
+    <Project Path="Core/Sigmatic.Core/Sigmatic.Core.csproj" />
   </Folder>
   <Folder Name="/Frontend/" />
+  <Folder Name="/Frontend/ConsoleUi/">
+    <Project Path="Frontend/ConsoleUi/Sigmatic.Console/Sigmatic.Console.csproj" Id="228d1232-90d1-4ed1-bb9a-c3e890149ef2" />
+  </Folder>
+  <Folder Name="/Frontend/WebUi/" />
+  <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure/Sigmatic.Infrastructure.Tests/Sigmatic.Infrastructure.Tests.csproj" Id="60035ddb-0b9f-44d4-83ac-a5ef5d0597c3" />
+    <Project Path="Infrastructure/Sigmatic.Infrastructure/Sigmatic.Infrastructure.csproj" Id="3e3510de-ade7-4329-a825-cbf5d9b1afe2" />
+  </Folder>
 </Solution>

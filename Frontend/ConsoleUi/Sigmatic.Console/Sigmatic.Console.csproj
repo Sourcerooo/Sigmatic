@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Input\Configuration\basiszins.csv" />
+    <None Remove="Input\Configuration\instruments.json" />
+    <None Remove="Input\Configuration\prices.csv" />
+    <None Remove="Input\PriceData\BIL.csv" />
+    <None Remove="Input\PriceData\GLD.csv" />
+    <None Remove="Input\PriceData\IEF.csv" />
+    <None Remove="Input\PriceData\SPY.csv" />
+    <None Remove="Input\PriceData\TLT.csv" />
+    <None Remove="Input\TaxAlpha_Raw_Data_2021.xml" />
+    <None Remove="Input\TaxAlpha_Raw_Data_2022.xml" />
+    <None Remove="Input\TaxAlpha_Raw_Data_2023.xml" />
+    <None Remove="Input\TaxAlpha_Raw_Data_2024.xml" />
+    <None Remove="Input\TaxAlpha_Raw_Data_2025.xml" />
+    <None Remove="Input\TestData\Generated File November 28, 2025 - 4_29PM.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Input\Configuration\basiszins.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\Configuration\instruments.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\Configuration\prices.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\PriceData\BIL.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\PriceData\GLD.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\PriceData\IEF.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\PriceData\SPY.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\PriceData\TLT.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\TaxAlpha_Raw_Data_2021.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\TaxAlpha_Raw_Data_2022.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\TaxAlpha_Raw_Data_2023.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\TaxAlpha_Raw_Data_2024.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\TaxAlpha_Raw_Data_2025.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Input\TestData\Generated File November 28, 2025 - 4_29PM.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\App\Sigmatic.App\Sigmatic.App.csproj" />
+    <ProjectReference Include="..\..\..\Core\Sigmatic.Core\Sigmatic.Core.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\Sigmatic.Infrastructure\Sigmatic.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

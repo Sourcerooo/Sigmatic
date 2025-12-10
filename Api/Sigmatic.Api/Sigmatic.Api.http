@@ -1,0 +1,6 @@
+@Sigmatic.Api_HostAddress = http://localhost:5168
+
+GET {{Sigmatic.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
